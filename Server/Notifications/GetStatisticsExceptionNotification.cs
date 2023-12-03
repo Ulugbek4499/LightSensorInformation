@@ -3,23 +3,23 @@ using Serilog;
 
 namespace Server.Notifications
 {
-    public record GetStatisticsExcetionNotification(string deviceId, Exception ex) : INotification;
+    public record GetStatisticsExceptionNotification(Exception ex) : INotification;
 
-    public class GetStatisticsExcetionLogNotificationHandler : INotificationHandler<GetStatisticsExcetionNotification>
+    public class GetStatisticsExceptionLogNotificationHandler : INotificationHandler<GetStatisticsExceptionNotification>
     {
-        public Task Handle(GetStatisticsExcetionNotification notification, CancellationToken cancellationToken)
+        public Task Handle(GetStatisticsExceptionNotification notification, CancellationToken cancellationToken)
         {
-            Log.Information($"Error occurred on Save Telemetry Data ' deviceId: {notification.deviceId} ', and 'Message: {notification.ex.Message}'.");
+            Log.Information($"Error occurred on Getting Statistics. 'Message: {notification.ex.Message}'.");
 
             return Task.CompletedTask;
         }
     }
 
-    public class GetStatisticsExcetionConsoleNotificationHandler : INotificationHandler<GetStatisticsExcetionNotification>
+    public class GetStatisticsExceptionConsoleNotificationHandler : INotificationHandler<GetStatisticsExceptionNotification>
     {
-        public async Task Handle(GetStatisticsExcetionNotification notification, CancellationToken cancellationToken)
+        public async Task Handle(GetStatisticsExceptionNotification notification, CancellationToken cancellationToken)
         {
-            await Console.Out.WriteLineAsync($"Error occurred on Save Telemetry Data ' deviceId: {notification.deviceId} ', and 'Message: {notification.ex.Message}'.");
+            await Console.Out.WriteLineAsync($"Error occurred on Statistics. 'Message: {notification.ex.Message}'.");
         }
     }
 }
