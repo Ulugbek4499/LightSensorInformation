@@ -13,6 +13,7 @@ namespace Server.Services
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddTransient<GlobalExceptionHandlingMiddleware>();
+
            
             services.AddDbContext<IApplicationDbContext, ApplicationDbContext>(options =>
             {

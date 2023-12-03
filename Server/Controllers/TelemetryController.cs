@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Server.DataBase;
 using Server.Entities;
@@ -11,11 +12,13 @@ namespace Server.Controllers
     {
         private readonly ILogger<TelemetryController> _logger;
         private readonly IApplicationDbContext _context;
+        private readonly IMediator _mediator;
 
-        public TelemetryController(ILogger<TelemetryController> logger, IApplicationDbContext context)
+        public TelemetryController(ILogger<TelemetryController> logger, IApplicationDbContext context, IMediator mediator)
         {
             _logger = logger;
             _context = context;
+            _mediator = mediator;
         }
 
         [HttpPost("{deviceId}/telemetry")]

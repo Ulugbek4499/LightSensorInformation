@@ -4,6 +4,7 @@ using Server.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddServices(builder.Configuration);
+SerilogService.SerilogSettings(builder.Configuration);
 
 var app = builder.Build();
 
