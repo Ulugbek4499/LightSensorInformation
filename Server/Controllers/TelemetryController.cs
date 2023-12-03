@@ -96,7 +96,8 @@ namespace Server.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error retrieving statistics for device {deviceId}: {ex.Message}");
+                await _mediator.Publish(new GetStatisticsExceptionNotification(deviceId, ex));
+
                 return StatusCode(500, "Internal Server Error");
             }
         }
