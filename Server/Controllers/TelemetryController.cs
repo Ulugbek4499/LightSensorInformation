@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Server.DataBase;
 using Server.Entities;
+using Server.Notifications;
 
 namespace Server.Controllers
 {
@@ -49,21 +49,25 @@ namespace Server.Controllers
                     };
 
                     _context.Telementries.Add(telemetry);
+                    
+                    await _mediator.Publish(new SaveTelemetryNotification(telemetry.DeviceId, telemetry.Illuminance, telemetry.Timestamp));
                 }
 
                 await _context.SaveChangesAsync();
+                    
                 return Ok("Telemetry data saved successfully");
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error saving telemetry data for device {deviceId}: {ex.Message}");
+                await _mediator.Publish(new SaveTelemetryExcetionNotification(deviceId, ex));
+
                 return StatusCode(500, "Internal Server Error");
             }
         }
 
 
         [HttpGet("{deviceId}/statistics")]
-        public IActionResult GetStatistics(string deviceId)
+        public async Task<IActionResult> GetStatistics(string deviceId)
         {
             try
             {
@@ -86,7 +90,7 @@ namespace Server.Controllers
                          .OrderBy(stat => stat.Date)
                          .ToList();
 
-
+                await _mediator.Publish(new GetStatisticsNotification());
 
                 return Ok(statistics);
             }
@@ -98,44 +102,3 @@ namespace Server.Controllers
         }
     }
 }
-
-       /* [HttpPost("{deviceId}/telemetry")]
-        public async Task<IActionResult> SaveTelemetryDataAsync(string deviceId, List<TelemetryEntry> telemetryData)
-        {
-            try
-            {
-                // Validate deviceId
-                if (string.IsNullOrEmpty(deviceId))
-                {
-                    return BadRequest("Invalid device ID");
-                }
-
-                // Validate and save telemetry data
-                foreach (var entry in telemetryData)
-                {
-                    if (entry.Time <= 0 || entry.Illuminance < 0)
-                    {
-                        _logger.LogWarning($"Invalid telemetry data received for device {deviceId}: {entry}");
-                        continue; // Skip invalid data
-                    }
-
-                    var telemetry = new Telemetry
-                    {
-                        DeviceId = deviceId,
-                        Illuminance = entry.Illuminance,
-                        Timestamp = DateTimeOffset.FromUnixTimeSeconds(entry.Time).UtcDateTime
-                    };
-
-                    _context.Telementries.Add(telemetry);
-                }
-
-                await _context.SaveChangesAsync();
-
-                return Ok("Telemetry data saved successfully");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error saving telemetry data for device {deviceId}: {ex.Message}");
-                return StatusCode(500, "Internal Server Error");
-            }
-        }*/
