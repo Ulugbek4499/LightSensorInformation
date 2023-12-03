@@ -10,13 +10,11 @@ namespace Server.Controllers
     [Route("devices")]
     public class TelemetryController : ControllerBase
     {
-        private readonly ILogger<TelemetryController> _logger;
         private readonly IApplicationDbContext _context;
         private readonly IMediator _mediator;
 
-        public TelemetryController(ILogger<TelemetryController> logger, IApplicationDbContext context, IMediator mediator)
+        public TelemetryController(IApplicationDbContext context, IMediator mediator)
         {
-            _logger = logger;
             _context = context;
             _mediator = mediator;
         }
@@ -26,19 +24,16 @@ namespace Server.Controllers
         {
             try
             {
-                // Validate deviceId
                 if (string.IsNullOrEmpty(deviceId))
                 {
                     return BadRequest("Invalid device ID");
                 }
 
-                // Validate and save telemetry data
                 foreach (var entry in telemetryData)
                 {
                     if (entry.Time <= 0 || entry.Illuminance < 0)
                     {
-                        _logger.LogWarning($"Invalid telemetry data received for device {deviceId}: {entry}");
-                        continue; // Skip invalid data
+                        continue; 
                     }
 
                     var telemetry = new Telemetry
@@ -49,8 +44,8 @@ namespace Server.Controllers
                     };
 
                     _context.Telementries.Add(telemetry);
-                    
-                    await _mediator.Publish(new SaveTelemetryNotification(telemetry.DeviceId, telemetry.Illuminance, telemetry.Timestamp));
+                    await _mediator.Publish(new SaveTelemetryNotification(
+                                            telemetry.DeviceId, telemetry.Illuminance, telemetry.Timestamp));
                 }
 
                 await _context.SaveChangesAsync();
@@ -71,17 +66,15 @@ namespace Server.Controllers
         {
             try
             {
-                // Validate deviceId
                 if (string.IsNullOrEmpty(deviceId))
                 {
                     return BadRequest("Invalid device ID");
                 }
 
-                // Retrieve maximum illuminance values for the last thirty days
                 var thirtyDaysAgo = DateTime.UtcNow.AddDays(-30);
                 var statistics = _context.Telementries
                          .Where(t => t.DeviceId == deviceId && t.Timestamp >= thirtyDaysAgo)
-                         .GroupBy(t => t.Timestamp.Date) // Use Date property to extract the date part
+                         .GroupBy(t => t.Timestamp.Date) 
                          .Select(group => new
                             {
                                  Date = group.Key,
