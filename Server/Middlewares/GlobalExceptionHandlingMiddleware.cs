@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Reflection;
 using System.Text.Json;
 
 namespace Server.Middlewares
@@ -21,7 +20,6 @@ namespace Server.Middlewares
             }
             catch (Exception ex)
             {
-                // Create a logger dynamically
                 var logger = _loggerFactory.CreateLogger<GlobalExceptionHandlingMiddleware>();
                 logger.LogError(ex, ex.Message);
 
