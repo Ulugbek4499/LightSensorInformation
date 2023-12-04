@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Server.DataBase;
@@ -22,19 +23,22 @@ namespace Server.Controllers
         }
 
         [HttpPost("register")]
-        public ActionResult<User> Register(UserDto request)
+        public async Task<ActionResult<int>> Register(UserDto request)
         {
-            User user = new User();
             string passwordHash
                 = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
-            user.Username = request.Username;
-            user.PasswordHash = passwordHash;
+            var user = new User()
+            {
+                Username = request.Username,
+                PasswordHash = passwordHash
+            };
 
-            _context.Users.Add(user);
-            _context.SaveChangesAsync();
+            user = _context.Users.Add(user).Entity;
 
-            return Ok(user);
+            await _context.SaveChangesAsync();
+
+            return Ok(user.Id);
         }
 
         [HttpPost("login")]
