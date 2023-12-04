@@ -18,7 +18,7 @@ namespace Server.Services
             services.AddControllers();
             services.AddEndpointsApiExplorer();
 
-            services.AddSingleton<ILoggerFactory, LoggerFactory>();
+          /*  services.AddSingleton<ILoggerFactory, LoggerFactory>();*/
 
             services.AddSingleton<GlobalExceptionHandlingMiddleware>();
 

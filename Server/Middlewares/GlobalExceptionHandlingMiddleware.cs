@@ -1,15 +1,18 @@
 ﻿using System.Net;
 using System.Text.Json;
+using MediatR;
+using Server.Entities;
+using Server.Notifications;
 
 namespace Server.Middlewares
 {
     public class GlobalExceptionHandlingMiddleware : IMiddleware
     {
-        private readonly ILoggerFactory _loggerFactory;
+        private readonly IMediator _mediator;
 
-        public GlobalExceptionHandlingMiddleware(ILoggerFactory loggerFactory)
+        public GlobalExceptionHandlingMiddleware(IMediator mediator)
         {
-            _loggerFactory = loggerFactory;
+              _mediator = mediator;
         }
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
@@ -20,8 +23,7 @@ namespace Server.Middlewares
             }
             catch (Exception ex)
             {
-                var logger = _loggerFactory.CreateLogger<GlobalExceptionHandlingMiddleware>();
-                logger.LogError(ex, ex.Message);
+                await _mediator.Publish(new ExceptionNotification(DateTime.Now, ex));
 
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
@@ -32,6 +34,7 @@ namespace Server.Middlewares
                     Title = "Server Error",
                     Details = "Internal server error occurred"
                 };
+
 
                 context.Response.ContentType = "application/json";
 

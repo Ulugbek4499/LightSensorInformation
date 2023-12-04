@@ -7,9 +7,9 @@ using Server.Notifications;
 
 namespace Server.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("devices")]
-    [Authorize]
     public class TelemetryController : ControllerBase
     {
         private readonly IApplicationDbContext _context;
