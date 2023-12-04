@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Server.Entities;
+using Server.Entities.Identity;
 
 namespace Server.DataBase
 {
@@ -10,6 +11,7 @@ namespace Server.DataBase
         }
 
         public DbSet<Telemetry> Telementries { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public static ApplicationDbContext CreateDbContext(IConfiguration configuration)
         {

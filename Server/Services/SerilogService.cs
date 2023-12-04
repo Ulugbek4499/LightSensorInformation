@@ -2,7 +2,6 @@
 
 namespace Server.Services
 {
-
     public class SerilogService
     {
         public static void SerilogSettings(IConfiguration configuration)

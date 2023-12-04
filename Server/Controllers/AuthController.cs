@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Server.DataBase;
 using Server.Entities.Identity;
 
 namespace Server.Controllers
@@ -12,36 +13,45 @@ namespace Server.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        public AuthController(IConfiguration configuration)
+        private readonly IApplicationDbContext _context;
+
+        public AuthController(IConfiguration configuration, IApplicationDbContext context)
         {
             _configuration = configuration;
+            _context = context;
         }
-
-        public static User user = new User();
 
         [HttpPost("register")]
         public ActionResult<User> Register(UserDto request)
         {
+            User user = new User();
             string passwordHash
                 = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
             user.Username = request.Username;
             user.PasswordHash = passwordHash;
 
+            _context.Users.Add(user);
+            _context.SaveChangesAsync();
+
             return Ok(user);
         }
 
         [HttpPost("login")]
-        public ActionResult<User> Login(UserDto request)
+        public ActionResult<string> Login(UserDto request)
         {
-            if (user.Username != request.Username)
+            User? user = _context.Users.FirstOrDefault(x => x.Username == request.Username);
+
+            if (user is null)
             {
                 return BadRequest("User not found");
             }
 
-            if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
+
+            if (!isPasswordValid)
             {
-                return BadRequest("WrongPassword");
+                return BadRequest("Invalid password");
             }
 
             string token = CreateToken(user);
