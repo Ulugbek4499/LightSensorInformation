@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Text;
+﻿using System.Text;
 using Newtonsoft.Json;
 using SensorEmulator;
 
@@ -25,7 +24,7 @@ public class Program
             Thread.Sleep(TimeSpan.FromSeconds(15));
         }
 
-     //   await GetStatisticsAsync(deviceId);
+        //   await GetStatisticsAsync(deviceId);
     }
 
     private static double GenerateSimulatedIlluminance()
@@ -45,7 +44,7 @@ public class Program
                 string url = ServerUrl.Replace("{deviceId}", deviceId);
 
                 // Convert telemetry data to JSON
-                string jsonTelemetryData =JsonConvert.SerializeObject(telemetryData);
+                string jsonTelemetryData = JsonConvert.SerializeObject(telemetryData);
 
                 // Prepare content
                 var content = new StringContent(jsonTelemetryData, Encoding.UTF8, "application/json");

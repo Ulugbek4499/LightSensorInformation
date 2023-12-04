@@ -1,14 +1,11 @@
-﻿using MediatR;
-using System.Reflection;
-using Microsoft.AspNetCore.Hosting;
+﻿using System.Reflection;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Server.DataBase;
 using Server.Middlewares;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace Server.Services
@@ -24,7 +21,7 @@ namespace Server.Services
             services.AddSingleton<ILoggerFactory, LoggerFactory>();
 
             services.AddSingleton<GlobalExceptionHandlingMiddleware>();
-            
+
             services.AddSwaggerGen(options =>
             {
                 options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
@@ -55,7 +52,7 @@ namespace Server.Services
             {
                 config.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly());
             });
-          
+
             services.AddDbContext<IApplicationDbContext, ApplicationDbContext>(options =>
             {
                 options.UseNpgsql(configuration.GetConnectionString("DbConnect"));

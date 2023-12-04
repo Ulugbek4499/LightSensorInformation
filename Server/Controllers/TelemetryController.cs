@@ -35,7 +35,7 @@ namespace Server.Controllers
                 {
                     if (entry.Time <= 0 || entry.Illuminance < 0)
                     {
-                        continue; 
+                        continue;
                     }
 
                     var telemetry = new Telemetry
@@ -51,7 +51,7 @@ namespace Server.Controllers
                 }
 
                 await _context.SaveChangesAsync();
-                    
+
                 return Ok("Telemetry data saved successfully");
             }
             catch (Exception ex)
@@ -76,12 +76,12 @@ namespace Server.Controllers
                 var thirtyDaysAgo = DateTime.UtcNow.AddDays(-30);
                 var statistics = _context.Telementries
                          .Where(t => t.DeviceId == deviceId && t.Timestamp >= thirtyDaysAgo)
-                         .GroupBy(t => t.Timestamp.Date) 
+                         .GroupBy(t => t.Timestamp.Date)
                          .Select(group => new
-                            {
-                                 Date = group.Key,
-                                 MaxIlluminance = group.Max(t => t.Illuminance)
-                            })
+                         {
+                             Date = group.Key,
+                             MaxIlluminance = group.Max(t => t.Illuminance)
+                         })
                          .OrderBy(stat => stat.Date)
                          .ToList();
 
