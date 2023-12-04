@@ -10,7 +10,6 @@ namespace Server.Services
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
                 .WriteTo.File("Logs/log.txt")
-                //.WriteTo.Http("http://your-http-endpoint")
                 .CreateLogger();
         }
     }
