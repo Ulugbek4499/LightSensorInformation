@@ -8,7 +8,9 @@ namespace Server.Services
         {
             Log.Logger = new LoggerConfiguration()
                 .Enrich.FromLogContext()
-                .ReadFrom.Configuration(configuration)
+                .WriteTo.Console()
+                .WriteTo.File("Logs/log.txt")
+                //.WriteTo.Http("http://your-http-endpoint")
                 .CreateLogger();
         }
     }

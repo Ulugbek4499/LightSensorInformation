@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Text.Json;
 using MediatR;
-using Server.Entities;
+using Server.Models;
 using Server.Notifications;
 
 namespace Server.Middlewares
@@ -27,28 +27,16 @@ namespace Server.Middlewares
 
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-                ExceptionDetails details = new()
+                var errorResponse = new ErrorResponse
                 {
-                    Status = (int)HttpStatusCode.InternalServerError,
-                    Type = "Server Error",
-                    Title = "Server Error",
-                    Details = "Internal server error occurred"
+                    StatusCode = (int)HttpStatusCode.InternalServerError,
+                    Message = "Internal server error occurred"
                 };
 
-
                 context.Response.ContentType = "application/json";
-
-                string json = JsonSerializer.Serialize(details);
+                string json = JsonSerializer.Serialize(errorResponse);
                 await context.Response.WriteAsync(json);
             }
         }
-    }
-
-    public class ExceptionDetails
-    {
-        public int Status { get; set; }
-        public string Type { get; set; }
-        public string Title { get; set; }
-        public string Details { get; set; }
     }
 }
