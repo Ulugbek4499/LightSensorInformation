@@ -15,6 +15,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.UseHttpsRedirection();
 
 app.Use(async (context, next) =>
@@ -27,7 +28,6 @@ app.Use(async (context, next) =>
 
     await next();
 });
-
 app.UseHttpLogging();
 
 app.UseAuthentication();
