@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Server.Middlewares;
 using Server.Services;
 
@@ -14,8 +15,20 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 app.UseHttpsRedirection();
+
+app.Use(async (context, next) =>
+{
+    context.Response.OnStarting(() =>
+    {
+        context.Response.Headers["UserId"] = "123";
+        return Task.CompletedTask;
+    });
+
+    await next();
+});
+
+app.UseHttpLogging();
 
 app.UseAuthentication();
 app.UseAuthorization();

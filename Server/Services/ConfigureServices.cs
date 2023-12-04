@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -17,10 +18,14 @@ namespace Server.Services
             services.AddLogging(builder => builder.AddConsole());
             services.AddControllers();
             services.AddEndpointsApiExplorer();
-
-          /*  services.AddSingleton<ILoggerFactory, LoggerFactory>();*/
-
             services.AddSingleton<GlobalExceptionHandlingMiddleware>();
+
+            services.AddHttpLogging(x =>
+            {
+                 x.LoggingFields = HttpLoggingFields.ResponseStatusCode 
+                    | HttpLoggingFields.ResponseHeaders
+                    | HttpLoggingFields.ResponseBody;
+            });
 
             services.AddSwaggerGen(options =>
             {
