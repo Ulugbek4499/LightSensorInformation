@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.DataBase;
 using Server.Entities;
@@ -8,6 +9,7 @@ namespace Server.Controllers
 {
     [ApiController]
     [Route("devices")]
+    [Authorize]
     public class TelemetryController : ControllerBase
     {
         private readonly IApplicationDbContext _context;

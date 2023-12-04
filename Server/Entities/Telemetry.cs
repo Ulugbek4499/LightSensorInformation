@@ -2,10 +2,8 @@
 
 namespace Server.Entities
 {
-    public class Telemetry
+    public class Telemetry:BaseEntitiy
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
         public string DeviceId { get; set; }
         public double Illuminance { get; set; }
         public DateTime Timestamp { get; set; }
