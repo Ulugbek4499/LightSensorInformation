@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.OpenApi.Models;
 
 namespace Server.Services
 {
@@ -15,14 +16,39 @@ namespace Server.Services
     {
         public static IServiceCollection AddServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddLogging(builder => builder.AddConsole()); 
-            services.AddSwaggerGen();
+            services.AddLogging(builder => builder.AddConsole());
             services.AddControllers();
             services.AddEndpointsApiExplorer();
 
             services.AddSingleton<ILoggerFactory, LoggerFactory>();
 
             services.AddSingleton<GlobalExceptionHandlingMiddleware>();
+            
+            services.AddSwaggerGen(options =>
+            {
+                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
+                    In = ParameterLocation.Header,
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
+
+                options.OperationFilter<SecurityRequirementsOperationFilter>();
+            });
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                     .AddJwtBearer(options =>
+                     {
+                         options.TokenValidationParameters = new TokenValidationParameters
+                         {
+                             ValidateIssuerSigningKey = true,
+                             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+                                 .GetBytes(configuration.GetSection("Jwt:Token").Value)),
+                             ValidateIssuer = false,
+                             ValidateAudience = false
+                         };
+                     });
 
             services.AddMediatR(config =>
             {
@@ -34,29 +60,6 @@ namespace Server.Services
                 options.UseNpgsql(configuration.GetConnectionString("DbConnect"));
             });
 
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(x =>
-            {
-                x.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidIssuer = configuration["Jwt:MyIssuer"],
-                    ValidAudience = configuration["Jwt:MyAudience"],
-                    IssuerSigningKey = new SymmetricSecurityKey
-                        (Encoding.UTF8.GetBytes(configuration["Jwt:ThisIsMySecretKey"])),
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true
-                };
-            });
-
-            services.AddAuthorization();
-            
-            
             return services;
         }
     }

@@ -1,4 +1,6 @@
-﻿namespace Server.Entities.Identity
+﻿using Server.Entities.Common;
+
+namespace Server.Entities.Identity
 {
     public class User : BaseEntitiy
     {

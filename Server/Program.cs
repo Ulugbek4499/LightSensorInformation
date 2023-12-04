@@ -1,6 +1,3 @@
-using MediatR;
-using System.Reflection;
-using Microsoft.AspNetCore.Hosting;
 using Server.Middlewares;
 using Server.Services;
 

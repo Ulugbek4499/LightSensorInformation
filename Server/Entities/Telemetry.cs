@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Server.Entities.Common;
 
 namespace Server.Entities
 {
