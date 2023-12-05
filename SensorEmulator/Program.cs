@@ -16,7 +16,11 @@ public class Program
 
             var telemetryData = new List<TelemetryEntry>
             {
-                new TelemetryEntry { Illuminance = illuminance, Time = DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
+                new TelemetryEntry
+                {
+                    Illuminance = illuminance, 
+                    Time = DateTimeOffset.UtcNow.ToUnixTimeSeconds() 
+                }
             };
 
             await SendTelemetryDataAsync(deviceId, telemetryData);
