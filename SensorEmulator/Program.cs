@@ -21,14 +21,12 @@ public class Program
 
             await SendTelemetryDataAsync(deviceId, telemetryData);
 
-            Thread.Sleep(TimeSpan.FromSeconds(15));
+            Thread.Sleep(TimeSpan.FromMinutes(15));  //Here you can change "FromMinutes" to "FromSeconds" and we can see the results
         }
     }
 
     private static double GenerateSimulatedIlluminance()
     {
-        // Simulated logic to generate illumination values
-        // For example, increasing illuminance in the first half of the day and decreasing in the second half
         int currentHour = DateTime.UtcNow.Hour;
         return currentHour < 12 ? 100.0 + currentHour : 200.0 - currentHour;
     }
@@ -41,16 +39,12 @@ public class Program
             {
                 string url = ServerUrl.Replace("{deviceId}", deviceId);
 
-                // Convert telemetry data to JSON
                 string jsonTelemetryData = JsonConvert.SerializeObject(telemetryData);
 
-                // Prepare content
                 var content = new StringContent(jsonTelemetryData, Encoding.UTF8, "application/json");
 
-                // Send HTTP POST request to the server
                 HttpResponseMessage response = await httpClient.PostAsync(url, content);
 
-                // Check if the request was successful
                 response.EnsureSuccessStatusCode();
 
                 Console.WriteLine($"Telemetry data sent successfully: {jsonTelemetryData}");
@@ -70,16 +64,12 @@ public class Program
             {
                 string url = $"https://localhost:7253/devices/{deviceId}/statistics";
 
-                // Send HTTP GET request to the server
                 HttpResponseMessage response = await httpClient.GetAsync(url);
 
-                // Check if the request was successful
                 response.EnsureSuccessStatusCode();
 
-                // Read the response content
                 string responseContent = await response.Content.ReadAsStringAsync();
 
-                // Parse and display the statistics
                 var statistics = JsonConvert.DeserializeObject<List<StatisticsEntry>>(responseContent);
 
                 Console.WriteLine("Statistics:");
