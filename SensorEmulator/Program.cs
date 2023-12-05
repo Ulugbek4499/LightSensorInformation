@@ -4,7 +4,8 @@ using SensorEmulator;
 
 public class Program
 {
-    private const string ServerUrl = "https://localhost:7253/devices/{deviceId}/telemetry";
+    private const string ServerUrl = "https://localhost:7253/devices/{deviceId}/telemetry"; //Here you can change the URL which works for you, you can find that 
+                                                                                            //~\LightSensorInformation\Server\Properties\launchSettings.json
 
     public static async Task Main(string[] args)
     {

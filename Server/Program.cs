@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Server.Middlewares;
 using Server.Services;
 
@@ -22,7 +21,7 @@ app.Use(async (context, next) =>
 {
     context.Response.OnStarting(() =>
     {
-        context.Response.Headers["UserId"] = "123";
+        context.Response.Headers["UserId"] = "Not regestered";
         return Task.CompletedTask;
     });
 
