@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Security.Claims;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.DataBase;
@@ -69,7 +70,6 @@ namespace Server.Controllers
         {
             try
             {
-                throw new DllNotFoundException();
 
                 if (string.IsNullOrEmpty(deviceId))
                 {
@@ -88,15 +88,17 @@ namespace Server.Controllers
                          .OrderBy(stat => stat.Date)
                          .ToList();
 
-                await _mediator.Publish(new GetStatisticsNotification());
+
+                await _mediator.Publish(new GetStatisticsNotification
+                    (deviceId, HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
+
 
                 return Ok(statistics);
             }
             catch (Exception ex)
             {
-                await _mediator.Publish(new GetStatisticsExceptionNotification(deviceId, ex));
-
-                throw new DllNotFoundException();
+                await _mediator.Publish(new GetStatisticsExceptionNotification(
+                    deviceId, ex, HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
 
                 return StatusCode(500, "Internal Server Error");
             }

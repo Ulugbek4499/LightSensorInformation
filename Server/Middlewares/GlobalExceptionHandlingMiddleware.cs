@@ -24,13 +24,10 @@ namespace Server.Middlewares
             }
             catch (Exception ex)
             {
-                // Get the userId if the user is authenticated
                 string userId = context.User.Identity?.IsAuthenticated == true
                       ? context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
                       : null;
 
-
-                // Publish ExceptionNotification with or without userId
                 await _mediator.Publish(new ExceptionNotification(DateTime.Now, ex, userId));
 
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;

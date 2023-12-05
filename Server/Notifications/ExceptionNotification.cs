@@ -9,7 +9,7 @@ namespace Server.Notifications
     {
         public Task Handle(ExceptionNotification notification, CancellationToken cancellationToken)
         {
-            Log.Information($"Server Exception. 'Message: {notification.ex.Message}' 'Time: {notification.time}'.");
+            Log.Information($"Server Exception. 'UserId: {notification.userId}' 'Message: {notification.ex.Message}' 'Time: {notification.time}'.");
 
             return Task.CompletedTask;
         }
@@ -20,7 +20,7 @@ namespace Server.Notifications
         public async Task Handle(ExceptionNotification notification, CancellationToken cancellationToken)
         {
             await Console.Out.WriteLineAsync(
-                $"Server Exception. 'Message: {notification.ex.Message}' 'Time: {notification.time}'.");
+                $"Server Exception. 'UserId: {notification.userId}'  'Message: {notification.ex.Message}' 'Time: {notification.time}'.");
         }
     }
 }
