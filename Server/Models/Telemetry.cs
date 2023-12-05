@@ -1,11 +1,10 @@
 ﻿using Server.Entities.Common;
 
-namespace Server.Entities
+namespace Server.Entities;
+
+public class Telemetry : BaseEntitiy
 {
-    public class Telemetry : BaseEntitiy
-    {
-        public string DeviceId { get; set; }
-        public double Illuminance { get; set; }
-        public DateTime Timestamp { get; set; }
-    }
+    public string DeviceId { get; set; }
+    public double Illuminance { get; set; }
+    public DateTime Timestamp { get; set; }
 }

@@ -1,9 +1,7 @@
-﻿namespace Server.Entities.Identity
-{
-    public class UserDto
-    {
-        public required string Username { get; set; }
-        public required string Password { get; set; }
+﻿namespace Server.Entities.Identity;
 
-    }
+public class UserDto
+{
+    public required string Username { get; set; }
+    public required string Password { get; set; }
 }

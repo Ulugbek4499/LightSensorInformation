@@ -1,8 +1,7 @@
-﻿namespace Server.Entities
+﻿namespace Server.Entities;
+
+public class TelemetryEntry
 {
-    public class TelemetryEntry
-    {
-        public double Illuminance { get; set; }
-        public long Time { get; set; }
-    }
+    public double Illuminance { get; set; }
+    public long Time { get; set; }
 }
