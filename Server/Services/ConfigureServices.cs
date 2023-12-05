@@ -22,9 +22,9 @@ namespace Server.Services
 
             services.AddHttpLogging(x =>
             {
-                 x.LoggingFields = HttpLoggingFields.ResponseStatusCode 
-                    | HttpLoggingFields.ResponseHeaders
-                    | HttpLoggingFields.ResponseBody;
+                x.LoggingFields = HttpLoggingFields.ResponseStatusCode
+                   | HttpLoggingFields.ResponseHeaders
+                   | HttpLoggingFields.ResponseBody;
             });
 
             services.AddSwaggerGen(options =>
