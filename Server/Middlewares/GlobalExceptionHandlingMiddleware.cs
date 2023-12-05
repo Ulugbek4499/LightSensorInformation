@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Security.Claims;
 using System.Text.Json;
 using MediatR;
 using Server.Models;
@@ -12,7 +13,7 @@ namespace Server.Middlewares
 
         public GlobalExceptionHandlingMiddleware(IMediator mediator)
         {
-              _mediator = mediator;
+            _mediator = mediator;
         }
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
@@ -23,7 +24,14 @@ namespace Server.Middlewares
             }
             catch (Exception ex)
             {
-                await _mediator.Publish(new ExceptionNotification(DateTime.Now, ex));
+                // Get the userId if the user is authenticated
+                string userId = context.User.Identity?.IsAuthenticated == true
+                      ? context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                      : null;
+
+
+                // Publish ExceptionNotification with or without userId
+                await _mediator.Publish(new ExceptionNotification(DateTime.Now, ex, userId));
 
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 

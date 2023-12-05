@@ -2,6 +2,8 @@
 using System.Security.Claims;
 using System.Text;
 using System.Threading;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Server.DataBase;
@@ -25,8 +27,7 @@ namespace Server.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<int>> Register(UserDto request)
         {
-            string passwordHash
-                = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
             var user = new User()
             {
@@ -34,12 +35,15 @@ namespace Server.Controllers
                 PasswordHash = passwordHash
             };
 
-            user = _context.Users.Add(user).Entity;
-
+            _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return Ok(user.Id);
+            // Generate JWT token
+            string token = CreateToken(user);
+
+            return Ok(new { UserId = user.Id, Token = token });
         }
+
 
         [HttpPost("login")]
         public ActionResult<string> Login(UserDto request)
@@ -66,9 +70,10 @@ namespace Server.Controllers
         private string CreateToken(User user)
         {
             List<Claim> claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.Username)
-            };
+             {
+                 new Claim(ClaimTypes.Name, user.Username),
+                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
                 _configuration.GetSection("Jwt:Token").Value!));

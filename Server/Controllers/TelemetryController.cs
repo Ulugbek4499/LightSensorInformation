@@ -21,6 +21,7 @@ namespace Server.Controllers
             _mediator = mediator;
         }
 
+        [AllowAnonymous]
         [HttpPost("{deviceId}/telemetry")]
         public async Task<IActionResult> SaveTelemetryData(string deviceId, List<TelemetryEntry> telemetryData)
         {
@@ -68,6 +69,8 @@ namespace Server.Controllers
         {
             try
             {
+                throw new DllNotFoundException();
+
                 if (string.IsNullOrEmpty(deviceId))
                 {
                     return BadRequest("Invalid device ID");
@@ -92,6 +95,8 @@ namespace Server.Controllers
             catch (Exception ex)
             {
                 await _mediator.Publish(new GetStatisticsExceptionNotification(deviceId, ex));
+
+                throw new DllNotFoundException();
 
                 return StatusCode(500, "Internal Server Error");
             }
