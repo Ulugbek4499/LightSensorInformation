@@ -55,33 +55,4 @@ public class Program
             Console.WriteLine($"Error sending telemetry data: {ex.Message}");
         }
     }
-
-    private static async Task GetStatisticsAsync(string deviceId)
-    {
-        try
-        {
-            using (var httpClient = new HttpClient())
-            {
-                string url = $"https://localhost:7253/devices/{deviceId}/statistics";
-
-                HttpResponseMessage response = await httpClient.GetAsync(url);
-
-                response.EnsureSuccessStatusCode();
-
-                string responseContent = await response.Content.ReadAsStringAsync();
-
-                var statistics = JsonConvert.DeserializeObject<List<StatisticsEntry>>(responseContent);
-
-                Console.WriteLine("Statistics:");
-                foreach (var entry in statistics)
-                {
-                    Console.WriteLine($"Date: {entry.Date}, Max Illuminance: {entry.MaxIlluminance}");
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error getting statistics: {ex.Message}");
-        }
-    }
 }
