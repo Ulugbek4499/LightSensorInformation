@@ -2,7 +2,6 @@
 using Serilog;
 
 namespace Server.Notifications;
-
 public record ExceptionNotification(DateTime time, Exception ex, string userId) : INotification;
 
 public class ExceptionLogNotificationHandler : INotificationHandler<ExceptionNotification>
