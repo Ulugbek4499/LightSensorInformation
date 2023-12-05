@@ -40,16 +40,18 @@ namespace Server.Controllers
                         continue;
                     }
 
+                    var roundedIlluminance = Math.Round(entry.Illuminance * 2) / 2;
+
                     var telemetry = new Telemetry
                     {
                         DeviceId = deviceId,
-                        Illuminance = entry.Illuminance,
+                        Illuminance = roundedIlluminance,
                         Timestamp = DateTimeOffset.FromUnixTimeSeconds(entry.Time).UtcDateTime
                     };
 
                     _context.Telementries.Add(telemetry);
                     await _mediator.Publish(new SaveTelemetryNotification(
-                                            telemetry.DeviceId, telemetry.Illuminance, telemetry.Timestamp));
+                                                telemetry.DeviceId, telemetry.Illuminance, telemetry.Timestamp));
                 }
 
                 await _context.SaveChangesAsync();
@@ -65,33 +67,31 @@ namespace Server.Controllers
         }
 
 
+
         [HttpGet("{deviceId}/statistics")]
         public async Task<IActionResult> GetStatistics(string deviceId)
         {
             try
             {
-
                 if (string.IsNullOrEmpty(deviceId))
                 {
                     return BadRequest("Invalid device ID");
                 }
 
-                var thirtyDaysAgo = DateTime.UtcNow.AddDays(-30);
+                var thirtyDaysAgoUnix = DateTimeOffset.UtcNow.AddDays(-200).ToUnixTimeSeconds();
+
                 var statistics = _context.Telementries
-                         .Where(t => t.DeviceId == deviceId && t.Timestamp >= thirtyDaysAgo)
-                         .GroupBy(t => t.Timestamp.Date)
-                         .Select(group => new
-                         {
-                             Date = group.Key,
-                             MaxIlluminance = group.Max(t => t.Illuminance)
-                         })
-                         .OrderBy(stat => stat.Date)
-                         .ToList();
+                    .Where(t => t.DeviceId == deviceId && t.Timestamp >= DateTimeOffset.FromUnixTimeSeconds(thirtyDaysAgoUnix).UtcDateTime)
+                    .GroupBy(t => t.Timestamp.Date)
+                    .Select(group => new
+                    {
+                        Date = group.Key,
+                        MaxIlluminance = group.Max(t => t.Illuminance)
+                    })
+                    .OrderBy(stat => stat.Date)
+                    .ToList();
 
-
-                await _mediator.Publish(new GetStatisticsNotification
-                    (deviceId, HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
-
+                await _mediator.Publish(new GetStatisticsNotification(deviceId, HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value));
 
                 return Ok(statistics);
             }
@@ -103,5 +103,7 @@ namespace Server.Controllers
                 return StatusCode(500, "Internal Server Error");
             }
         }
+
+
     }
 }

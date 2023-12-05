@@ -10,7 +10,7 @@ public class Program
     {
         string deviceId = "1";
 
-        while (false)
+        while (true)
         {
             double illuminance = GenerateSimulatedIlluminance();
 
@@ -23,8 +23,6 @@ public class Program
 
             Thread.Sleep(TimeSpan.FromSeconds(15));
         }
-
-           await GetStatisticsAsync(deviceId);
     }
 
     private static double GenerateSimulatedIlluminance()
