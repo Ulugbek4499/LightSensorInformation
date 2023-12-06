@@ -76,7 +76,7 @@ public class TelemetryController : ControllerBase
                 return BadRequest("Invalid device ID");
             }
 
-            var thirtyDaysAgoUnix = DateTimeOffset.UtcNow.AddDays(-200).ToUnixTimeSeconds();
+            var thirtyDaysAgoUnix = DateTimeOffset.UtcNow.AddDays(-30).ToUnixTimeSeconds(); //Here we can change the number of days
 
             var statistics = _context.Telementries
                 .Where(t => t.DeviceId == deviceId && t.Timestamp >= DateTimeOffset.FromUnixTimeSeconds(thirtyDaysAgoUnix).UtcDateTime)
