@@ -17,7 +17,7 @@ public class AuthController : ControllerBase
 
     public AuthController(IConfiguration configuration, IApplicationDbContext context)
     {
-        _configuration = configuration;
+        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _context = context;
     }
 
@@ -65,24 +65,29 @@ public class AuthController : ControllerBase
 
     private string CreateToken(User user)
     {
-        List<Claim> claims = new List<Claim>
-         {
-             new Claim(ClaimTypes.Name, user.Username),
-             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-         };
+        var jwt = "";
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-            _configuration.GetSection("Jwt:Token").Value!));
+        if (_configuration != null)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                _configuration.GetSection("Jwt:Token").Value!));
 
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
-        var token = new JwtSecurityToken(
-            claims: claims,
-            expires: DateTime.Now.AddDays(3),
-            signingCredentials: creds);
+            var token = new JwtSecurityToken(
+                claims: new List<Claim>
+                {
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                },
+                expires: DateTime.Now.AddDays(3),
+                signingCredentials: creds);
 
-        var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            jwt = new JwtSecurityTokenHandler().WriteToken(token);
+        }
 
         return jwt;
     }
+
+
 }

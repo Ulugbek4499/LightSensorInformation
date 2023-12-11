@@ -66,6 +66,7 @@ public class TelemetryController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpGet("{deviceId}/statistics")]
     public async Task<IActionResult> GetStatistics(string deviceId)
     {
