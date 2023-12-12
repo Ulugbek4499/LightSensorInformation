@@ -6,8 +6,8 @@ namespace Server.DataBase;
 
 public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
-        : base(options){ }
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options) { }
 
     public DbSet<Telemetry> Telementries { get; set; }
     public DbSet<User> Users { get; set; }

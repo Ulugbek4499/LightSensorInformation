@@ -23,7 +23,7 @@ public class TelemetryControllerUnitTest
     {
         // Arrange
         mockContext.Setup(c => c.Telementries.Add(It.IsAny<Telemetry>())).Verifiable();
-        mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1); 
+        mockContext.Setup(c => c.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
         var telemetryController = new TelemetryController(mockContext.Object, mockMediator.Object);
         var telemetryData = new List<TelemetryEntry>
@@ -58,12 +58,12 @@ public class TelemetryControllerUnitTest
         // Arrange
 
         var telemetryController = new TelemetryController(mockContext.Object, mockMediator.Object);
-        var telemetryData = new List<TelemetryEntry> 
-        { 
-            new TelemetryEntry 
+        var telemetryData = new List<TelemetryEntry>
+        {
+            new TelemetryEntry
             {
-                Time = 123456789, 
-                Illuminance = 10.0 
+                Time = 123456789,
+                Illuminance = 10.0
             }
         };
 

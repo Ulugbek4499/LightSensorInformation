@@ -37,8 +37,8 @@ namespace LightSensor.UnitTest
             var validationErrors = ValidateModelAndGetErrors(telemetry);
 
             // Assert
-            Assert.NotEmpty(validationErrors);                              
-            Assert.Contains("DeviceId is required", validationErrors);      
+            Assert.NotEmpty(validationErrors);
+            Assert.Contains("DeviceId is required", validationErrors);
         }
 
         private string ValidateModelAndGetErrors(object model)
@@ -52,7 +52,7 @@ namespace LightSensor.UnitTest
                 return string.Join(", ", validationResults.Select(r => r.ErrorMessage));
             }
 
-            return string.Empty;    
+            return string.Empty;
         }
     }
 }

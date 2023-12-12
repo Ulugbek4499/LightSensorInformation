@@ -86,7 +86,7 @@ public class AuthControllerTest
 
     [Theory]
     [InlineData("Jamshid", "Jamshid123")]      // User with this username already exists in the database which is here in our array
-    [InlineData("Bahrombek", "Bahrombek123")] 
+    [InlineData("Bahrombek", "Bahrombek123")]
     public async Task UserRegister_Fail(string username, string password)
     {
         // Arrange

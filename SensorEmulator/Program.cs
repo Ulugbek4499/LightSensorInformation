@@ -18,8 +18,8 @@ public class Program
             {
                 new TelemetryEntry
                 {
-                    Illuminance = illuminance, 
-                    Time = DateTimeOffset.UtcNow.ToUnixTimeSeconds() 
+                    Illuminance = illuminance,
+                    Time = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
                 }
             };
 
