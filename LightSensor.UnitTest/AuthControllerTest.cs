@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Moq;
-using Newtonsoft.Json;
 using Server.Controllers;
 using Server.DataBase;
 using Server.Entities.Identity;
@@ -46,7 +45,6 @@ public class AuthControllerTest
 
         _authController = new AuthController(configurationMock.Object, dbContextMock.Object);
     }
-
 
     private static Mock<DbSet<User>> SetUpUsersDbSet(List<User> users)
     {
