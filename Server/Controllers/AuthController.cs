@@ -24,6 +24,11 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<ActionResult<int>> Register(UserDto request)
     {
+        if (_context.Users.Any(u => u.Username == request.Username))
+        {
+            return BadRequest("Username already exists. Please choose a different username.");
+        }
+
         string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
         var user = new User()
@@ -35,10 +40,14 @@ public class AuthController : ControllerBase
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
+        // Retrieve the generated Id after saving changes
+        int userId = user.Id;
+
         string token = CreateToken(user);
 
-        return Ok(new { UserId = user.Id, Token = token });
+        return Ok(new { UserId = userId, Token = token });
     }
+
 
 
     [HttpPost("login")]
@@ -88,6 +97,4 @@ public class AuthController : ControllerBase
 
         return jwt;
     }
-
-
 }
