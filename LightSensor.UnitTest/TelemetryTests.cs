@@ -11,7 +11,6 @@ namespace LightSensor.UnitTest
             // Arrange
             var telemetry = new Telemetry
             {
-                Id=1,
                 DeviceId = "TestDevice",
                 Illuminance = 10.0,
                 Timestamp = DateTime.UtcNow
