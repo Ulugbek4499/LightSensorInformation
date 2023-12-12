@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Server.DataBase;
@@ -60,8 +61,13 @@ public static class ConfigureServices
 
         services.AddDbContext<IApplicationDbContext, ApplicationDbContext>(options =>
         {
-            options.UseNpgsql(configuration.GetConnectionString("DbConnect"));
+            //Here we have an option to choose PostgreSQL or MySQL database
+
+           // options.UseNpgsql(configuration.GetConnectionString("DbConnect"));    
+          
+            options.UseMySQL("Server=localhost; Port=3306; Database=LightSensorDb; User Id=root; Password=W@2915djkq#; Pooling=true; AllowUserVariables=True; CharSet=utf8mb4;");
         });
+
 
         return services;
     }
