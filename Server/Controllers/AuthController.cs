@@ -40,7 +40,6 @@ public class AuthController : ControllerBase
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        // Retrieve the generated Id after saving changes
         int userId = user.Id;
 
         string token = CreateToken(user);
