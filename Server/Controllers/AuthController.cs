@@ -76,8 +76,8 @@ public class AuthController : ControllerBase
     {
         var jwt = "";
 
-        if (_configuration != null)
-        {
+    /*    if (_configuration != null)
+        {*/
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
                 _configuration.GetSection("Jwt:Token").Value!));
 
@@ -93,7 +93,7 @@ public class AuthController : ControllerBase
                 signingCredentials: creds);
 
             jwt = new JwtSecurityTokenHandler().WriteToken(token);
-        }
+      /*  }*/
 
         return jwt;
     }
