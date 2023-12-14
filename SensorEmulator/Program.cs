@@ -8,7 +8,7 @@ public class Program
                                                                                             // "~\LightSensorInformation\Server\Properties\launchSettings.json"
     public static async Task Main(string[] args)
     {
-        string deviceId = "1";
+        string deviceId = "1";              //Here you can change the DeviceId
 
         while (true)
         {
