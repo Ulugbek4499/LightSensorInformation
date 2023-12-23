@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Server.Entities;
 
-
 namespace LightSensor.UnitTest
 {
     public class TelemetryTests
